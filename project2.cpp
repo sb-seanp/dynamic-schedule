@@ -28,19 +28,35 @@ int main(int argc, char** argv) {
     cin >> token;
     c = stoi(token);
 
-    int cost;
+    int total = 0; // total demand
     vector<int> demand;
-    vector<int> orders;
+    int orders[n][total];
 
     for (int i = 0; i < n; i++) {
         cin >> token;
-        demand.push_back(stoi(token));
+        int monthD = stoi(token);
+        total += monthD;
+        demand.push_back(monthD);
     }
 
     for (int i = 0; i < n; i++) {
-        int min_val = INT_MAX;
+        for (int j = 0; j < total; j++) {
+            if (i == 0 || j == 0){
+                orders[i][j] = 0;
+            }
+            else if (){
 
+            }
+            else {
+                orders[i][j] = orders[i-1][j];
+            }
+        }
+
+        cerr << "something" << endl;
     }
+
+    int cost = orders[n][total];
+
 
     cout << n << " " << k << " " << s << " " << c << endl;
     for (int i = 0; i < n; i++) {
