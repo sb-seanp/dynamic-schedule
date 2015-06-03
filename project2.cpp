@@ -29,6 +29,7 @@ int main(int argc, char** argv) {
     c = stoi(token);
 
     int total = 0; // total demand
+    int storage = 0;
     vector<int> demand;
     int orders[n][total];
 
@@ -40,12 +41,17 @@ int main(int argc, char** argv) {
     }
 
     for (int i = 0; i < n; i++) {
+        int ordered;
         for (int j = 0; j < total; j++) {
             if (i == 0 || j == 0){
                 orders[i][j] = 0;
             }
-            else if (){
-
+            else if (demand[i] <= j) {
+                orders[i][j] = min();
+            }
+            else if (demand[i] <= storage) {
+                orders[i][j] = 0;
+                storage -= demand[i];
             }
             else {
                 orders[i][j] = orders[i-1][j];
