@@ -37,32 +37,42 @@ int main(int argc, char** argv) {
 
     reverse(demand.begin(), demand.end());
 
-    int purchased = 0;
-    int totalCost[months][maxStor];
+    int totalCost[months][maxStor+1];
 
     // i = month, j = cars in storage
     for (int i = 0; i < months; i++) {
-        for (int j = 0; j < maxStor; j++) {
-            if (i == 0 || j == 0){
-                totalCost[i][j] = fixedCost;
-            }
-            else if (demand[i] >= 0) {
-                // purchased - k
-                purchased = maxStor - j;
-                totalCost[i][j] = min(fixedCost + (j + purchased - demand[i])*monthlyCost + totalCost[i-1][j + purchased - demand[i]], totalCost[i-1][j]);
-            }
-            else {
-                totalCost[i][j] = totalCost[i-1][j];
+        for (int j = 0; j <= maxStor; j++) {
+            for (int k = 0; k < maxStor - j; k++) {
+                /*if (j == 0) {
+                    totalCost[i][j] = fixedCost;
+                }*/
+                //else {
+                    /*int k;
+                    if (j < demand[i]) k = demand[i] - j;
+                    else k = 0;*/
+                    int temp = 0;
+                    if (k > 0) temp = fixedCost;
+                    totalCost[i][j] = min(temp + (j + k - demand[i]) * monthlyCost +
+                                                      totalCost[i - 1][j + k - demand[i]], totalCost[i - 1][j]);
+                //}
             }
         }
-
-        cerr << totalCost[i][maxStor] << endl;
     }
 
-    int cost = totalCost[months][maxStor];
-    cout << cost << endl;
+    // print cost
+    int cost = totalCost[months-1][0];
+    cout << cost << endl << "----" << endl;
 
+    // print matrix
+    for (int i = 0; i < months; i++) {
+        for (int j = 0; j < months; j++) {
+            cout << totalCost[i][j] << " ";
+        }
+        cout << endl;
+    }
 
+    // print input
+    cout << "----" << endl;
     cout << months << " " << fixedCost << " " << maxStor << " " << monthlyCost << endl;
     for (int i = 0; i < months; i++) {
         cout << demand[i] << endl;
