@@ -16,56 +16,55 @@ using namespace std;
 int main(int argc, char** argv) {
 
     // # of months, cost of making an order, max storage size, monthly cost of storing a car
-    int n, k, s, c;
+    int months, fixedCost, maxStor, monthlyCost;
 
     string token;
     cin >> token;
-    n = stoi(token);
+    months = stoi(token);
     cin >> token;
-    k = stoi(token);
+    fixedCost = stoi(token);
     cin >> token;
-    s = stoi(token);
+    maxStor = stoi(token);
     cin >> token;
-    c = stoi(token);
+    monthlyCost = stoi(token);
 
-    int total = 0; // total demand
-    int storage = 0;
     vector<int> demand;
-    int orders[n][total];
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < months; i++) {
         cin >> token;
-        int monthD = stoi(token);
-        total += monthD;
-        demand.push_back(monthD);
+        demand.push_back(stoi(token));
     }
 
-    for (int i = 0; i < n; i++) {
-        int ordered;
-        for (int j = 0; j < total; j++) {
+    reverse(demand.begin(), demand.end());
+
+    int purchased = 0;
+    int totalCost[months][maxStor];
+
+    // i = month, j = cars in storage
+    for (int i = 0; i < months; i++) {
+        for (int j = 0; j < maxStor; j++) {
             if (i == 0 || j == 0){
-                orders[i][j] = 0;
+                totalCost[i][j] = fixedCost;
             }
-            else if (demand[i] <= j) {
-                orders[i][j] = min();
-            }
-            else if (demand[i] <= storage) {
-                orders[i][j] = 0;
-                storage -= demand[i];
+            else if (demand[i] >= 0) {
+                // purchased - k
+                purchased = maxStor - j;
+                totalCost[i][j] = min(fixedCost + (j + purchased - demand[i])*monthlyCost + totalCost[i-1][j + purchased - demand[i]], totalCost[i-1][j]);
             }
             else {
-                orders[i][j] = orders[i-1][j];
+                totalCost[i][j] = totalCost[i-1][j];
             }
         }
 
-        cerr << "something" << endl;
+        cerr << totalCost[i][maxStor] << endl;
     }
 
-    int cost = orders[n][total];
+    int cost = totalCost[months][maxStor];
+    cout << cost << endl;
 
 
-    cout << n << " " << k << " " << s << " " << c << endl;
-    for (int i = 0; i < n; i++) {
+    cout << months << " " << fixedCost << " " << maxStor << " " << monthlyCost << endl;
+    for (int i = 0; i < months; i++) {
         cout << demand[i] << endl;
     }
 
