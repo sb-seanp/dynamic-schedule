@@ -35,37 +35,40 @@ int main(int argc, char** argv) {
         demand.push_back(stoi(token));
     }
 
-    reverse(demand.begin(), demand.end());
+    //reverse(demand.begin(), demand.end());
 
-    int totalCost[months][maxStor+1];
+    int totalCost[months+1][maxStor+1];
+    for (int i = 0; i < maxStor + 1; i++) {
+        totalCost[0][i] = 50;
+    }
 
     // i = month, j = cars in storage
     for (int i = 0; i < months; i++) {
-        for (int j = 0; j <= maxStor; j++) {
-            for (int k = 0; k < maxStor - j; k++) {
-                /*if (j == 0) {
-                    totalCost[i][j] = fixedCost;
-                }*/
-                //else {
-                    /*int k;
-                    if (j < demand[i]) k = demand[i] - j;
-                    else k = 0;*/
-                    int temp = 0;
-                    if (k > 0) temp = fixedCost;
-                    totalCost[i][j] = min(temp + (j + k - demand[i]) * monthlyCost +
-                                                      totalCost[i - 1][j + k - demand[i]], totalCost[i - 1][j]);
-                //}
+        for (int j = 1; j < maxStor; j++) {
+            if (demand[i] > j) {
+                int inventory; // inventory to order not covered by storage
+                if (demand[i] > j) inventory = demand[i] - j;
+                else inventory = 0;
+
+                int productCost = 0; // if inventory ordered, add a fixed cost
+                if (inventory > 0) productCost = fixedCost;
+
+                totalCost[i][j] = min(productCost + (j + inventory - demand[i]) * monthlyCost +
+                                                    totalCost[i - 1][j + inventory - demand[i]], totalCost[i - 1][j]);
+                //cout << cost << endl;
             }
+            else
+                totalCost[i][i] = totalCost[i-1][j];
         }
     }
 
     // print cost
-    int cost = totalCost[months-1][0];
+    int cost = totalCost[months][maxStor];
     cout << cost << endl << "----" << endl;
 
     // print matrix
     for (int i = 0; i < months; i++) {
-        for (int j = 0; j < months; j++) {
+        for (int j = 0; j < maxStor; j++) {
             cout << totalCost[i][j] << " ";
         }
         cout << endl;
